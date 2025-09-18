@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sendero_seguro/services/location_service.dart';
 import 'package:sendero_seguro/services/storage_service.dart';
 import 'package:sendero_seguro/models/report.dart';
@@ -18,11 +19,12 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
   
   final LocationService _locationService = LocationService.instance;
   final StorageService _storageService = StorageService();
-  
+
   String _selectedCategory = 'Seguridad';
   Position? _currentPosition;
   bool _isGettingLocation = true;
   bool _isSubmitting = false;
+  bool _isPermissionPermanentlyDenied = false;
 
   final List<String> _categories = [
     'Seguridad',
@@ -47,23 +49,66 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
   }
 
   Future<void> _getCurrentLocation() async {
+    if (mounted) {
+      setState(() {
+        _isGettingLocation = true;
+      });
+    }
+
     try {
-      final position = await _locationService.getCurrentLocation();
-      if (mounted) {
+      final status = await _locationService.requestLocationPermission();
+      if (!mounted) return;
+
+      if (status == PermissionStatus.permanentlyDenied) {
         setState(() {
-          _currentPosition = position;
+          _currentPosition = null;
           _isGettingLocation = false;
+          _isPermissionPermanentlyDenied = true;
         });
+        return;
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isGettingLocation = false);
+
+      if (status != PermissionStatus.granted && status != PermissionStatus.limited) {
+        setState(() {
+          _currentPosition = null;
+          _isGettingLocation = false;
+          _isPermissionPermanentlyDenied = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Se necesita el permiso de ubicación para continuar'),
+          ),
+        );
+        return;
+      }
+
+      final position = await _locationService.getCurrentLocation(requestPermission: false);
+      if (!mounted) return;
+
+      setState(() {
+        _currentPosition = position;
+        _isGettingLocation = false;
+        _isPermissionPermanentlyDenied = false;
+      });
+
+      if (position == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No se pudo obtener la ubicación actual'),
           ),
         );
       }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isGettingLocation = false;
+        _isPermissionPermanentlyDenied = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo obtener la ubicación actual'),
+        ),
+      );
     }
   }
 
@@ -184,23 +229,40 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
               color: Colors.red.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No se pudo obtener la ubicación',
-              style: TextStyle(
+            Text(
+              _isPermissionPermanentlyDenied
+                  ? 'Permiso de ubicación bloqueado'
+                  : 'No se pudo obtener la ubicación',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Para crear un reporte necesitamos tu ubicación actual. Verifica que tengas los permisos de ubicación activados.',
+            Text(
+              _isPermissionPermanentlyDenied
+                  ? 'Para continuar debes habilitar el permiso de ubicación desde los ajustes de tu dispositivo.'
+                  : 'Para crear un reporte necesitamos tu ubicación actual. Verifica que tengas los permisos de ubicación activados.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _getCurrentLocation,
-              child: const Text('Reintentar'),
+              onPressed: _isPermissionPermanentlyDenied
+                  ? () async {
+                      await openAppSettings();
+                      if (!mounted) return;
+                      await _getCurrentLocation();
+                    }
+                  : _getCurrentLocation,
+              child: Text(_isPermissionPermanentlyDenied ? 'Abrir ajustes' : 'Reintentar'),
             ),
+            if (_isPermissionPermanentlyDenied) ...[
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: _getCurrentLocation,
+                child: const Text('Ya habilité el permiso'),
+              ),
+            ],
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sendero_seguro/services/location_service.dart';
 import 'package:sendero_seguro/services/storage_service.dart';
 import 'package:sendero_seguro/models/danger_zone.dart';
@@ -43,13 +44,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initializeLocation() async {
-    final hasPermission = await _locationService.requestLocationPermission();
-    if (!hasPermission) {
-      _showPermissionDialog();
+    final status = await _locationService.requestLocationPermission();
+    if (!mounted) return;
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      _showPermissionDialog(status);
       return;
     }
 
-    final position = await _locationService.getCurrentLocation();
+    if (status != PermissionStatus.granted && status != PermissionStatus.limited) {
+      _showPermissionDialog(status);
+      return;
+    }
+
+    final position = await _locationService.getCurrentLocation(requestPermission: false);
     if (position != null && mounted) {
       setState(() => _currentPosition = position);
       _startLocationTracking();
@@ -169,14 +177,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _showPermissionDialog() {
+  void _showPermissionDialog(PermissionStatus status) {
+    final isPermanentlyDenied = status == PermissionStatus.permanentlyDenied;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Text('Permisos de Ubicación'),
-        content: const Text(
-          'Esta aplicación necesita acceso a tu ubicación para mostrarte las zonas de peligro cercanas y mantenerte seguro.',
+        content: Text(
+          isPermanentlyDenied
+              ? 'Parece que el permiso de ubicación está bloqueado. Ábrelo en los ajustes del dispositivo para habilitarlo y poder mostrarte las zonas de peligro cercanas.'
+              : 'Esta aplicación necesita acceso a tu ubicación para mostrarte las zonas de peligro cercanas y mantenerte seguro.',
         ),
         actions: [
           TextButton(
@@ -184,11 +196,17 @@ class _HomePageState extends State<HomePage> {
             child: const Text('Cancelar'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              _initializeLocation();
+              if (isPermanentlyDenied) {
+                await openAppSettings();
+                if (!mounted) return;
+                await _initializeLocation();
+              } else {
+                await _initializeLocation();
+              }
             },
-            child: const Text('Permitir'),
+            child: Text(isPermanentlyDenied ? 'Abrir ajustes' : 'Permitir'),
           ),
         ],
       ),
