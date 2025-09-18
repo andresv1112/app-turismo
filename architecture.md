@@ -54,6 +54,23 @@ Aplicación móvil para turismo responsable en veredas que permite a los usuario
 ### Android
 - Permisos de ubicación en AndroidManifest.xml
 - Configuración para Google Maps API
+- Firma de releases mediante keystore dedicado
+
+#### Firma de releases
+1. Genera un keystore para producción dentro de `android/app` (por ejemplo `android/app/release-keystore.jks`) con el siguiente comando:
+   ```bash
+   keytool -genkey -v -keystore android/app/release-keystore.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000
+   ```
+2. Crea el archivo `android/key.properties` (no debe versionarse) con el contenido:
+   ```properties
+   storePassword=TU_PASSWORD_DEL_KEYSTORE
+   keyPassword=TU_PASSWORD_DE_LA_LLAVE
+   keyAlias=upload
+   storeFile=../app/release-keystore.jks
+   ```
+3. Guarda estos archivos en un lugar seguro y comparte las contraseñas solo con las personas autorizadas para publicar releases oficiales.
+
+Cuando `key.properties` no está presente, la app reutiliza automáticamente la firma de depuración para facilitar el desarrollo local.
 
 ### iOS
 - Descripción de uso de ubicación en Info.plist
