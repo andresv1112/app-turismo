@@ -226,7 +226,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
             Icon(
               Icons.location_off,
               size: 80,
-              color: Colors.red.withValues(alpha: 0.5),
+              color: Colors.red.withOpacity(0.5),
             ),
             const SizedBox(height: 16),
             Text(
@@ -280,7 +280,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -301,7 +301,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                         Text(
                           '${_currentPosition!.latitude.toStringAsFixed(6)}, ${_currentPosition!.longitude.toStringAsFixed(6)}',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                           ),
                         ),
                       ],
