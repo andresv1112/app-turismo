@@ -1,4 +1,4 @@
-package com.mycompany.CounterApp
+package com.sendero.seguro
 
 import io.flutter.embedding.android.FlutterActivity
 
