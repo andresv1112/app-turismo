@@ -56,6 +56,22 @@ Aplicación móvil para turismo responsable en veredas que permite a los usuario
 - Configuración para Google Maps API
 - Firma de releases mediante keystore dedicado
 
+#### Clave de API de Google Maps
+1. Ingresa a [Google Cloud Console](https://console.cloud.google.com/) con una cuenta autorizada y selecciona el proyecto del cliente. Si no existe, crea uno nuevo para la aplicación **Sendero Seguro**.
+2. Habilita los servicios necesarios desde **APIs & Services > Library**:
+   - **Maps SDK for Android** (obligatorio para mostrar mapas).
+   - Opcionalmente **Geocoding API** o **Places API** si se requieren en futuras iteraciones.
+3. Crea una credencial tipo **API key** en **APIs & Services > Credentials** y aplícale restricciones:
+   - **Application restrictions**: selecciona *Android apps* y registra el `applicationId` (`com.mycompany.CounterApp`) junto con la huella SHA-1 de los certificados de firma (debug y release si aplica).
+   - **API restrictions**: limita la llave únicamente a las APIs habilitadas en el paso anterior.
+4. Copia la clave generada en el archivo `android/local.properties` (no versionado) con el formato:
+   ```properties
+   MAPS_API_KEY=tu_clave_aqui
+   ```
+   Alternativamente, puedes exponerla como variable de entorno (`MAPS_API_KEY`) o pasarla al invocar Gradle (`./gradlew assembleDebug -PMAPS_API_KEY=...`).
+5. Verifica el aprovisionamiento ejecutando `./gradlew :app:processDebugMainManifest` y comprobando que el valor se refleje en el manifest generado. Si la clave no está definida, Gradle emite una advertencia y el mapa cargará sin credenciales.
+6. Comparte la clave de manera segura y evita publicarla en repositorios o sistemas de seguimiento de tickets.
+
 #### Firma de releases
 1. Genera un keystore para producción dentro de `android/app` (por ejemplo `android/app/release-keystore.jks`) con el siguiente comando:
    ```bash

@@ -6,6 +6,27 @@ plugins {
 }
 
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+}
+
+def mapsApiKey = [
+    project.hasProperty('MAPS_API_KEY') ? project.property('MAPS_API_KEY') : null,
+    localProperties.getProperty('MAPS_API_KEY'),
+    System.getenv('MAPS_API_KEY')
+].find { candidate ->
+    candidate != null && !candidate.toString().trim().isEmpty()
+}
+if (mapsApiKey == null) {
+    logger.warn("MAPS_API_KEY is not defined. Google Maps will not load without a valid key.")
+    mapsApiKey = ""
+} else {
+    mapsApiKey = mapsApiKey.toString()
+}
+
+
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 def hasReleaseKeystore = keystorePropertiesFile.exists()
@@ -47,6 +68,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders = (manifestPlaceholders ?: [:]) + [MAPS_API_KEY: mapsApiKey]
     }
 
     buildTypes {
