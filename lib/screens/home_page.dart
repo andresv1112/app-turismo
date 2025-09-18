@@ -26,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   final StorageService _storageService = StorageService();
   final LocationService _locationService = LocationService.instance;
   int _selectedIndex = 0;
+  bool _isDangerDialogOpen = false;
+  String? _lastAlertedZoneId;
 
   @override
   void initState() {
@@ -65,20 +67,54 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _checkDangerZones(Position position) {
+    DangerZone? detectedZone;
+
     for (final zone in _dangerZones) {
       if (_locationService.isInsideDangerZone(position, zone)) {
-        _showDangerZoneAlert(zone);
+        detectedZone = zone;
         break;
       }
     }
+
+    if (detectedZone == null) {
+      _lastAlertedZoneId = null;
+      return;
+    }
+
+    if (_isDangerDialogOpen) {
+      return;
+    }
+
+    if (_lastAlertedZoneId == detectedZone.id) {
+      return;
+    }
+
+    _showDangerZoneAlert(detectedZone);
   }
 
   void _showDangerZoneAlert(DangerZone zone) {
+    if (_isDangerDialogOpen) {
+      return;
+    }
+
+    _isDangerDialogOpen = true;
+    _lastAlertedZoneId = zone.id;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => DangerZoneDialog(zone: zone),
-    );
+    ).whenComplete(() {
+      _isDangerDialogOpen = false;
+
+      if (!mounted) {
+        return;
+      }
+
+      if (_currentPosition != null) {
+        _checkDangerZones(_currentPosition!);
+      }
+    });
   }
 
   void _updateMapCamera(Position position) {
