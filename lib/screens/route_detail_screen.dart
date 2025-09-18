@@ -56,11 +56,13 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
           points: widget.route.points
               .map((point) => LatLng(point.latitude, point.longitude))
               .toList(),
-          color: Theme.of(context).colorScheme.primary,
+          color: Colors.blue,
           width: 4,
           patterns: [PatternItem.dash(20), PatternItem.gap(10)],
         ),
       };
+    } else {
+      _polylines = {};
     }
   }
 
@@ -241,7 +243,11 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
             zoom: 14,
           ),
           markers: _markers,
-          polylines: _polylines,
+          polylines: _polylines
+              .map((polyline) => polyline.copyWith(
+                    colorParam: Theme.of(context).colorScheme.primary,
+                  ))
+              .toSet(),
           mapType: MapType.terrain,
         ),
       ),
