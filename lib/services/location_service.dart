@@ -8,15 +8,32 @@ class LocationService {
   
   static LocationService get instance => _instance ??= LocationService._();
 
-  Future<bool> requestLocationPermission() async {
+  Future<PermissionStatus> requestLocationPermission() async {
+    final currentStatus = await Permission.location.status;
+    if (currentStatus == PermissionStatus.permanentlyDenied) {
+      return currentStatus;
+    }
+
     final permission = await Permission.location.request();
-    return permission == PermissionStatus.granted;
+    if (permission == PermissionStatus.permanentlyDenied) {
+      return PermissionStatus.permanentlyDenied;
+    }
+
+    return permission;
   }
 
-  Future<Position?> getCurrentLocation() async {
+  Future<Position?> getCurrentLocation({bool requestPermission = true}) async {
     try {
-      final hasPermission = await requestLocationPermission();
-      if (!hasPermission) return null;
+      PermissionStatus status;
+      if (requestPermission) {
+        status = await requestLocationPermission();
+      } else {
+        status = await Permission.location.status;
+      }
+
+      if (status != PermissionStatus.granted && status != PermissionStatus.limited) {
+        return null;
+      }
 
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
