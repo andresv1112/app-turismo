@@ -1,11 +1,11 @@
 {
-    "name": "dreamflow_counter",
-    "short_name": "dreamflow_counter",
+    "name": "Sendero Seguro",
+    "short_name": "Sendero Seguro",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F8FDF8",
+    "theme_color": "#2E7D32",
+    "description": "Aplicación móvil para turismo responsable que guía a los visitantes por rutas seguras y facilita el reporte de incidentes.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
