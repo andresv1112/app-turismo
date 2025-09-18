@@ -24,7 +24,7 @@ class ReportCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _getCategoryColor(report.category).withValues(alpha: 0.1),
+                    color: _getCategoryColor(report.category).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -57,7 +57,7 @@ class ReportCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(report.status).withValues(alpha: 0.1),
+                    color: _getStatusColor(report.status).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: _getStatusColor(report.status),
@@ -78,7 +78,7 @@ class ReportCard extends StatelessWidget {
             Text(
               report.description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
               ),
             ),
             const SizedBox(height: 12),
@@ -87,13 +87,13 @@ class ReportCard extends StatelessWidget {
                 Icon(
                   Icons.access_time,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   _formatDate(report.timestamp),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
                 const Spacer(),

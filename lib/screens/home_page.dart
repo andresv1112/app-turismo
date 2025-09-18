@@ -148,9 +148,9 @@ class _HomePageState extends State<HomePage> {
       circleId: CircleId(zone.id),
       center: LatLng(zone.latitude, zone.longitude),
       radius: zone.radius,
-      strokeColor: Colors.red.withValues(alpha: 0.8),
+      strokeColor: Colors.red.withOpacity(0.8),
       strokeWidth: 2,
-      fillColor: Colors.red.withValues(alpha: 0.2),
+      fillColor: Colors.red.withOpacity(0.2),
     )).toSet();
 
     _markers = _dangerZones.map((zone) => Marker(

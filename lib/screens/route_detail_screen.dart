@@ -110,7 +110,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: _getDifficultyColor(widget.route.difficulty).withValues(alpha: 0.1),
+                          color: _getDifficultyColor(widget.route.difficulty).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: _getDifficultyColor(widget.route.difficulty),
@@ -176,7 +176,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -260,7 +260,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+          color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -289,7 +289,7 @@ class _RouteDetailScreenState extends State<RouteDetailScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.3),
+          color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.3),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(

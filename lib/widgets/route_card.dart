@@ -35,7 +35,7 @@ class RouteCard extends StatelessWidget {
                   child: Icon(
                     Icons.image_not_supported,
                     size: 50,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.5),
+                    color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.5),
                   ),
                 ),
               ),
@@ -58,7 +58,7 @@ class RouteCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: _getDifficultyColor(route.difficulty).withValues(alpha: 0.1),
+                          color: _getDifficultyColor(route.difficulty).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: _getDifficultyColor(route.difficulty),
@@ -79,7 +79,7 @@ class RouteCard extends StatelessWidget {
                   Text(
                     route.description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -124,7 +124,7 @@ class RouteCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                          color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
