@@ -62,7 +62,7 @@ Aplicación móvil para turismo responsable en veredas que permite a los usuario
    - **Maps SDK for Android** (obligatorio para mostrar mapas).
    - Opcionalmente **Geocoding API** o **Places API** si se requieren en futuras iteraciones.
 3. Crea una credencial tipo **API key** en **APIs & Services > Credentials** y aplícale restricciones:
-   - **Application restrictions**: selecciona *Android apps* y registra el `applicationId` (`com.mycompany.CounterApp`) junto con la huella SHA-1 de los certificados de firma (debug y release si aplica).
+   - **Application restrictions**: selecciona *Android apps* y registra el `applicationId` (`com.sendero.seguro`) junto con la huella SHA-1 de los certificados de firma (debug y release si aplica).
    - **API restrictions**: limita la llave únicamente a las APIs habilitadas en el paso anterior.
 4. Copia la clave generada en el archivo `android/local.properties` (no versionado) con el formato:
    ```properties
