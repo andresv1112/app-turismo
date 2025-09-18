@@ -1,0 +1,26 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/release/
+android/app/*key*.jks
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+*.xcuserstate
+
+# Web
+lib/generated_plugin_registrant.dart
+
+# Misc
+*.log
